@@ -1,5 +1,4 @@
-import React, { use, useActionState } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Search from './components/Search'
 import Spinner from './components/spinner';
 import MovieCard from './components/MovieCard';
@@ -28,6 +27,8 @@ const App = () => {
   const [trendingMovies, setTrendingMovies] = useState([]); // State for trending movies
   const [selectedMovie, setSelectedMovie] = useState(null); // State for selected movie
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal open/close
+  const [upComingMovies, setUpComingMovies] = useState([]); // State for upcoming movies
+  const trendingScrollRef = useRef(null);
 
   useDebounce(()=> setDebouncedSearchTerm(searchTerm), 500, [searchTerm]); // Debounce the search term input by 500ms
 
@@ -62,6 +63,18 @@ const App = () => {
       setIsLoading(false); // Set loading state to false after fetching
     }
   };
+  const fetchUpComingMovies = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/movie/upcoming`, API_OPTIONS);
+      if(!response.ok) {
+        throw new Error ('Network response was not ok');
+      }
+      const data = await response.json();
+      setUpComingMovies(data.results.slice(0,3) || []);
+    } catch (error) {
+      console.error(`Error fetching upcoming movies: ${error}`);
+    }
+  } // Placeholder for future upcoming movies feature
 
   const loadTrendingMovies = async () => {
     try {
@@ -89,6 +102,15 @@ const App = () => {
     });
     setIsModalOpen(true);
   }
+  const scroll = (direction) => {
+    if (trendingScrollRef.current) {
+      const scrollAmount = 300;
+      trendingScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     fetchMovies(debouncedSearchTerm); // Fetch movies when the component mounts
@@ -98,22 +120,41 @@ const App = () => {
     loadTrendingMovies();
   },[]);
 
+  useEffect(() => {
+    fetchUpComingMovies();
+  },[]);
 
   return (
     <main>
       <div className='pattern'/>
         <div className='wrapper'>
           <header>
-            <img src="/hero.png" alt="Hero Banner" />
-            <h1>Find <span className='text-gradient'> Movies</span> You'll Enjoy <span className='text-red-500'>Without</span>  the Hassle</h1>
+            <div className='header-logos'>
+              {upComingMovies.map((movie) => (
+                <img 
+                  key={movie.id} 
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
+                  alt={movie.title}
+                  onClick={() => handleMovieClick(movie)}
+                />
+              ))}
+            </div>
+            {/* <img src="/hero.png" alt="Hero Banner" /> */}
+            <h1>Find <span className='text-gradient'> Movies</span> You'll Enjoy Without the Hassle</h1>
             <Search  searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             {/* <h2 className='text-center py-4'>Search Results for: <span className='text-gradient'>{searchTerm}</span></h2> //Test Unit */}
           </header>
 
           {trendingMovies.length > 0 && (
             <section className='trending'>
-              <h2 className='text-center'>Trending Movies</h2>
-              <ul>
+              <div className='trending-header'>
+                <h2 className='text-center'>Trending Movies</h2>
+                <div className='trending-controls'>
+                  <button className='scroll-btn' onClick={() => scroll('left')}>←</button>
+                  <button className='scroll-btn' onClick={() => scroll('right')}>→</button>
+                </div>
+              </div>
+              <ul ref={trendingScrollRef}>
                 {trendingMovies.map((movie, index)=>(
                   <li 
                     key={movie.$id} 
@@ -143,13 +184,16 @@ const App = () => {
 
               </ul>
             )}
-              
-            
-          </section>
+        </section>
           <MovieDetail movie={selectedMovie} isOpen={isModalOpen} onClose={handleCloseModal} />
 
         </div>
-      
+        <div className='z-10 py-6 bg-gradient mt-10'>
+          <p className='text-center text-white'>©{new Date().getFullYear()} MovieApp. <strong>For educational purposes only.</strong></p>
+          <p className='text-center text-white'>This project is non-commercial and all rights to the movie content belong to their respective owners.</p>
+          <a className='text-center text-white flex justify-center pointer-coarse:cursor-pointer'  href='https://emreonurkalafat.com'>Created by Emre Onur Kalafat</a>
+        </div>
+
     </main>
   )
 }

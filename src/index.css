@@ -48,6 +48,62 @@
   }
 }
 
+.header-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-logos img {
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 12rem;
+  width: auto;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(206, 206, 251, 0.2);
+  margin: 0 -5px;
+}
+
+/* 1. resim (sol) - sola doğru hafif açı */
+.header-logos img:nth-child(1) {
+  transform: rotateZ(-12deg);
+  order: 1;
+
+}
+
+/* 2. resim (orta) - z-index yüksek */
+.header-logos img:nth-child(2) {
+  transform: scale(1.1);
+  z-index: 10;
+  order: 2;
+}
+
+/* 3. resim (sağ) - sağa doğru hafif açı */
+.header-logos img:nth-child(3) {
+  transform: rotateZ(12deg);
+  order: 3;
+}
+
+.header-logos img:hover {
+  transform: scale(1.2);
+  box-shadow: 0 8px 25px rgba(206, 206, 251, 0.4);
+  z-index: 11;
+  order: 2;
+}
+
+/* Hover sırasında açıyı koru */
+.header-logos img:nth-child(1):hover {
+  transform: scale(1.2) rotateZ(-8deg);
+  ;
+}
+
+.header-logos img:nth-child(3):hover {
+  transform: scale(1.2) rotateZ(8deg);
+  z-index: 11;
+  order: 2;
+}
+
 @layer components {
   .pattern {
     @apply bg-hero-pattern w-full h-screen bg-center bg-cover absolute z-0;
@@ -59,6 +115,28 @@
 
   .trending {
     @apply mt-20;
+
+    .trending-header {
+      @apply flex justify-between items-center mb-4;
+    }
+
+    .trending-header h2 {
+      @apply text-2xl font-bold text-white;
+    }
+
+    .trending-controls {
+      @apply flex gap-3;
+    }
+
+    .scroll-btn {
+      @apply bg-light-100/10 hover:bg-light-100/20 text-light-100 px-4 py-2 rounded-lg transition-all duration-300 font-bold text-lg;
+      border: 1px solid rgba(206, 206, 251, 0.2);
+      z-index: 15;
+    }
+
+    .scroll-btn:hover {
+      @apply scale-110 shadow-lg;
+    }
 
     & ul {
       @apply flex flex-row overflow-y-auto gap-5 -mt-10 w-full hide-scrollbar;
@@ -433,11 +511,11 @@
         }
 
         .movie-trailer {
-            height: 200px;
+            height: 100px;
         }
 
         .no-trailer {
-            height: 200px;
+            height: 300px;
         }
 
         .movie-info-grid {
