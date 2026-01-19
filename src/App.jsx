@@ -192,6 +192,7 @@ const App = () => {
           <p className='text-center text-white'>©{new Date().getFullYear()} MovieApp. <strong>For educational purposes only.</strong></p>
           <p className='text-center text-white'>This project is non-commercial and all rights to the movie content belong to their respective owners.</p>
           <a className='text-center text-white flex justify-center pointer-coarse:cursor-pointer'  href='https://emreonurkalafat.com'>Created by Emre Onur Kalafat</a>
+          <a className='text-center text-white flex justify-center pointer-coarse:cursor-pointer'  href='https://github.com/EmreOnurKalafat/reactMovie'>Open Source Project GitHub link</a>
         </div>
 
     </main>
