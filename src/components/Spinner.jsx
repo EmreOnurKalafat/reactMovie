@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Spinner component to indicate loading state
 const Spinner = () => {
   return (
     

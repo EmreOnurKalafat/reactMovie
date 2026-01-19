@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Search component for movie search input
 const Search = ({searchTerm , setSearchTerm}) => {
   return (
     <div className='search' >
